@@ -1,0 +1,4 @@
+repos:
+  - org/api-service
+  - org/web-app
+  - org/worker-service
