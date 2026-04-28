@@ -13,16 +13,6 @@ on:
         required: false
         default: baseline
         type: string
-      config-path:
-        description: Path to the dependency operations config file.
-        required: false
-        default: campaign-config.yml
-        type: string
-      repo-allowlist-path:
-        description: Path to the central repository allowlist file.
-        required: false
-        default: repo-allowlist.yml
-        type: string
       project-sync:
         description: Enable project-board synchronization.
         required: false
@@ -44,6 +34,40 @@ tools:
 
 network:
   allowed: [defaults]
+
+env:
+  CAMPAIGN_PROJECT: Dependency Operations
+  CAMPAIGN_REPOS: |
+    org/api-service
+    org/web-app
+    org/worker-service
+  CAMPAIGN_LABELS: |
+    dependencies
+  RISK_LABEL_LOW: risk:low
+  RISK_LABEL_MEDIUM: risk:medium
+  RISK_LABEL_HIGH: risk:high
+  ROUTE_LABEL_AUTOMERGE: automerge:eligible
+  ROUTE_LABEL_REVIEW: needs-human-review
+  ROUTE_LABEL_SAFE_OUT: agent:safe-out
+  ROUTE_LABEL_STALE: stale:dependency-pr
+  RISK_KEYWORDS_HIGH: |
+    auth
+    crypto
+    payment
+    database
+    orm
+    framework
+    terraform
+    kubernetes
+    docker
+  RISK_KEYWORDS_LOW: |
+    eslint
+    prettier
+    jest
+    pytest
+    docs
+  STALE_DAYS: "7"
+  SUMMARY_ISSUE_TITLE: Dependency Operations Summary
 
 #observability:
 #  otlp:
@@ -83,9 +107,11 @@ Do not create custom databases or external trackers.
 
 Continuously reduce dependency risk and keep dependency remediation moving safely. Default to the lightweight path, and use campaign-style coordination only when project tracking or escalated routing adds value.
 
-Use `dependency-source`, `mode`, `config-path`, `repo-allowlist-path`, `project-sync`, and `summary-issue` as operating hints. Keep rich policy in repository config files rather than expanding these inputs into a full policy schema.
+Use `dependency-source`, `mode`, `project-sync`, and `summary-issue` as runtime toggles. Treat this workflow file as the source of truth for both policy and enrolled repositories.
 
 ## Scope
+
+Only operate on repositories listed in `CAMPAIGN_REPOS`.
 
 Process dependency signals according to `dependency-source`:
 
@@ -104,17 +130,15 @@ When operating on security alerts without PRs:
 
 ## Labels
 
-Always apply:
+Always apply labels from `CAMPAIGN_LABELS`.
 
-- `dependencies`
-
-Then exactly one:
+Then exactly one risk label:
 
 - `risk:low`
 - `risk:medium`
 - `risk:high`
 
-Optional:
+Optional routing labels:
 
 - `automerge:eligible`
 - `needs-human-review`
@@ -122,6 +146,8 @@ Optional:
 - `stale:dependency-pr`
 
 ## Risk Rules
+
+Use `RISK_KEYWORDS_HIGH` and `RISK_KEYWORDS_LOW` as classification hints.
 
 Low:
 
@@ -149,6 +175,10 @@ Apply `automerge:eligible` only when:
 
 Never merge directly.
 
+## Staleness
+
+Mark dependency PRs stale after `STALE_DAYS` days without activity.
+
 ## Safe-Out Rules
 
 Apply `agent:safe-out` if:
@@ -160,7 +190,7 @@ Apply `agent:safe-out` if:
 
 ## Project Sync
 
-If Project "Dependency Operations" exists:
+If `project-sync` is true and Project `CAMPAIGN_PROJECT` exists:
 
 - add PRs or alert-tracking items
 - update fields
@@ -180,7 +210,9 @@ Next Step: `[action]`
 
 ## Summary Issue
 
-Create/update:
+If `summary-issue` is true, create or update the summary issue titled `SUMMARY_ISSUE_TITLE`.
+
+Track:
 
 Open PRs: `[count]`  
 Open security alerts: `[count]`  

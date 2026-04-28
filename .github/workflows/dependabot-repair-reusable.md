@@ -8,11 +8,6 @@ on:
         required: false
         default: baseline
         type: string
-      config-path:
-        description: Path to the dependency operations config file in the caller repository.
-        required: false
-        default: campaign-config.yml
-        type: string
       safe-repair:
         description: Allow one minimal safe repair attempt.
         required: false
@@ -66,7 +61,7 @@ If not, use `noop`.
 
 Inspect failing checks and attempt one minimal safe repair.
 
-Use `mode`, `config-path`, `safe-repair`, `automerge`, and `project-sync` as caller-provided operating hints. Keep rich policy in repository config files rather than expanding these inputs into a full policy schema.
+Use `mode`, `safe-repair`, `automerge`, and `project-sync` as caller-provided operating hints.
 
 ## Allowed Repairs
 

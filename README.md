@@ -79,7 +79,7 @@ jobs:
 
 The reusable entry point lives in [.github/workflows/dependabot-repair-reusable.md](/Users/mnkiefer/Enterprise/dependabot-latest/.github/workflows/dependabot-repair-reusable.md), and consumers should reference the compiled lockfile so they use a stable GitHub Actions workflow artifact.
 
-Baseline defaults are already baked into the reusable workflow, so `with` is optional unless a caller wants to override behavior. Use workflow inputs for simple operating options, and keep richer policy such as labels, risk keywords, and repo allowlists in config files.
+Baseline defaults are already baked into the reusable workflow, so `with` is optional unless a caller wants to override behavior. Use workflow inputs for simple operating options, and keep richer campaign policy inside the workflow itself so the workflow stays self-contained.
 
 For example, a repo that wants to override only one default can keep the call small:
 
@@ -109,11 +109,9 @@ jobs:
         with:
             dependency-source: auto
             mode: campaign
-            config-path: campaign-config.yml
-            repo-allowlist-path: repo-allowlist.yml
             project-sync: true
             summary-issue: true
         secrets: inherit
 ```
 
-Use the repair workflow for local repository behavior when a PR exists, and the campaign workflow for central coordination across repositories whether teams use PRs, security alerts, or both.
+Use the repair workflow for local repository behavior when a PR exists, and the campaign workflow for central coordination across repositories whether teams use PRs, security alerts, or both. The campaign workflow owns its policy, labels, risk keywords, and enrolled repositories directly in the workflow file.
