@@ -24,6 +24,8 @@ on:
         default: false
         type: boolean
 
+inlined-imports: true
+
 permissions: read-all
 
 tools:
