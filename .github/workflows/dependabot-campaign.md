@@ -109,6 +109,35 @@ Continuously reduce dependency risk and keep dependency remediation moving safel
 
 Use `dependency-source`, `mode`, `project-sync`, and `summary-issue` as runtime toggles. Treat this workflow file as the source of truth for both policy and enrolled repositories.
 
+## Durable Policy vs One-Off Context
+
+Keep durable policy in this workflow file.
+
+- use workflow text for standing rules, stable routing, and long-term repository enrollment
+- treat event details, temporary operator asks, and run-specific edge cases as one-off runtime context unless the caller intentionally promotes them into workflow policy
+- do not rewrite or reinterpret long-term policy based on a single PR, alert, or temporary request
+
+## Workflow Phase Boundaries
+
+Respect the workflow split between precompute, agent, and post-process.
+
+Precompute:
+
+- gather deterministic facts such as matching repositories, dependency signals, labels, checks, alert metadata, staleness, and Project availability
+- prepare facts for decision-making without applying policy or mutating GitHub state
+
+Agent:
+
+- interpret the precomputed facts using the durable policy in this file
+- decide risk, routing, comment content, project intent, and whether to safe-out or noop
+- keep decisions bounded to the current run and avoid inventing new long-term rules
+
+Post-process:
+
+- apply the decided labels, comments, issue updates, and Project changes
+- persist only the outputs needed for this run's actions
+- do not add new reasoning or policy at this stage
+
 ## Scope
 
 Only operate on repositories listed in `CAMPAIGN_REPOS`.

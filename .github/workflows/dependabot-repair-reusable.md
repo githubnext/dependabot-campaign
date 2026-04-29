@@ -65,6 +65,35 @@ Inspect failing checks and attempt one minimal safe repair.
 
 Use `mode`, `safe-repair`, `automerge`, and `project-sync` as caller-provided operating hints.
 
+## Durable Policy vs One-Off Context
+
+Keep durable repair policy in this workflow file.
+
+- use workflow text for standing repair limits, escalation rules, and output expectations
+- treat check-specific findings, temporary operator guidance, and run-specific exceptions as one-off runtime context unless the caller intentionally changes workflow policy or inputs
+- do not promote a single repair situation into a permanent rule without updating the workflow on purpose
+
+## Workflow Phase Boundaries
+
+Respect the workflow split between precompute, agent, and post-process.
+
+Precompute:
+
+- gather deterministic facts such as failing checks, changed files, attempted repairs, repository tooling, and whether the PR fits scope
+- identify the available repair surface without deciding whether a repair is acceptable
+
+Agent:
+
+- interpret the precomputed facts using the durable repair policy in this file
+- decide whether to repair, safe-out, or no-op and draft the explanation for that choice
+- keep decisions scoped to the current run rather than creating new standing rules
+
+Post-process:
+
+- apply labels, comments, and at most one repair PR based on the agent decision
+- persist only the outputs needed to complete the chosen action
+- do not broaden the repair or introduce new policy here
+
 ## Allowed Repairs
 
 - lockfile updates
