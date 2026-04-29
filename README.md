@@ -59,59 +59,36 @@ The campaign workflow supports three signal modes through the `dependency-source
 
 Use `auto` as the default when you want one workflow that still works if a repository later moves away from opening Dependabot PRs.
 
-## Use From Another Repo
+## Add To Another Repo
 
-To consume the baseline repair flow from another repository, call the compiled reusable workflow in this repo:
+Add the source workflow into the target repository with `gh aw add`, then update the imported copy later with `gh aw update`.
 
-```yaml
-name: Dependabot Repair
+For the baseline local review flow:
 
-on:
-    pull_request:
-        types: [opened, synchronize, reopened]
-
-jobs:
-    dependabot-repair:
-        if: github.actor == 'dependabot[bot]'
-        uses: org/dependabot-latest/.github/workflows/dependabot-repair-reusable.lock.yml@v1
-        secrets: inherit
+```bash
+gh aw add githubnext/dependabot-campaign/.github/workflows/dependabot-repair.md --name dependabot-review
 ```
 
-The reusable entry point lives in [.github/workflows/dependabot-repair-reusable.md](/Users/mnkiefer/Enterprise/dependabot-latest/.github/workflows/dependabot-repair-reusable.md), and consumers should reference the compiled lockfile so they use a stable GitHub Actions workflow artifact.
+For the advanced coordination layer:
 
-Baseline defaults are already baked into the reusable workflow, so `with` is optional unless a caller wants to override behavior. Use workflow inputs for simple operating options, and keep richer campaign policy inside the workflow itself so the workflow stays self-contained.
-
-For example, a repo that wants to override only one default can keep the call small:
-
-```yaml
-jobs:
-    dependabot-repair:
-        if: github.actor == 'dependabot[bot]'
-        uses: org/dependabot-latest/.github/workflows/dependabot-repair-reusable.lock.yml@v1
-        with:
-            automerge: false
-        secrets: inherit
+```bash
+gh aw add githubnext/dependabot-campaign/.github/workflows/dependabot-campaign.md
 ```
 
-For the advanced coordination layer, a central operations repo can call the campaign workflow with campaign-mode options:
+If you want the reusable review variant in your own repository, add that file the same way:
 
-```yaml
-name: Dependency Operations Control Plane
-
-on:
-    workflow_dispatch:
-    schedule:
-        - cron: '42 12 * * 1-5'
-
-jobs:
-    dependency-operations:
-        uses: org/dependabot-latest/.github/workflows/dependabot-campaign.lock.yml@v1
-        with:
-            dependency-source: auto
-            mode: campaign
-            project-sync: true
-            summary-issue: true
-        secrets: inherit
+```bash
+gh aw add githubnext/dependabot-campaign/.github/workflows/dependabot-repair-reusable.md --name dependabot-review-reusable
 ```
 
-Use the repair workflow for local repository behavior when a PR exists, and the campaign workflow for central coordination across repositories whether teams use PRs, security alerts, or both. The campaign workflow owns its policy, labels, risk keywords, and enrolled repositories directly in the workflow file.
+After adding a workflow, review the imported `.md` file and generated `.lock.yml` file in the target repository, then commit them there. The upstream source filenames in this repository still use `dependabot-repair`, but the installed workflow names below use `dependabot-review`.
+
+To pull upstream changes later:
+
+```bash
+gh aw update dependabot-review
+gh aw update dependabot-campaign
+gh aw update dependabot-review-reusable
+```
+
+Use the review workflow for local repository behavior when a Dependabot PR exists, and the campaign workflow for central coordination across repositories whether teams use PRs, security alerts, or both. The campaign workflow owns its policy, labels, risk keywords, and enrolled repositories directly in the workflow file.
