@@ -63,10 +63,10 @@ Use `auto` as the default when you want one workflow that still works if a repos
 
 Do not consume these workflows with GitHub Actions `uses:`. For agentic workflows, add the source workflow into the target repository with `gh aw add`, then update the imported copy later with `gh aw update`.
 
-For the baseline local repair flow:
+For the baseline local review flow:
 
 ```bash
-gh aw add githubnext/dependabot-campaign/.github/workflows/dependabot-repair.md
+gh aw add githubnext/dependabot-campaign/.github/workflows/dependabot-repair.md --name dependabot-review
 ```
 
 For the advanced coordination layer:
@@ -75,20 +75,20 @@ For the advanced coordination layer:
 gh aw add githubnext/dependabot-campaign/.github/workflows/dependabot-campaign.md
 ```
 
-If you want the reusable repair variant in your own repository, add that file the same way:
+If you want the reusable review variant in your own repository, add that file the same way:
 
 ```bash
-gh aw add githubnext/dependabot-campaign/.github/workflows/dependabot-repair-reusable.md
+gh aw add githubnext/dependabot-campaign/.github/workflows/dependabot-repair-reusable.md --name dependabot-review-reusable
 ```
 
-After adding a workflow, review the imported `.md` file and generated `.lock.yml` file in the target repository, then commit them there.
+After adding a workflow, review the imported `.md` file and generated `.lock.yml` file in the target repository, then commit them there. The upstream source filenames in this repository still use `dependabot-repair`, but the installed workflow names below use `dependabot-review`.
 
 To pull upstream changes later:
 
 ```bash
-gh aw update dependabot-repair
+gh aw update dependabot-review
 gh aw update dependabot-campaign
-gh aw update dependabot-repair-reusable
+gh aw update dependabot-review-reusable
 ```
 
-Use the repair workflow for local repository behavior when a Dependabot PR exists, and the campaign workflow for central coordination across repositories whether teams use PRs, security alerts, or both. The campaign workflow owns its policy, labels, risk keywords, and enrolled repositories directly in the workflow file.
+Use the review workflow for local repository behavior when a Dependabot PR exists, and the campaign workflow for central coordination across repositories whether teams use PRs, security alerts, or both. The campaign workflow owns its policy, labels, risk keywords, and enrolled repositories directly in the workflow file.
