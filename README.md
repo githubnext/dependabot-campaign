@@ -57,7 +57,7 @@ The campaign workflow supports three signal modes through the `dependency-source
 - `prs`: operate only on Dependabot PRs
 - `alerts`: operate only on dependency security alerts, even if no PRs are raised
 
-Use `auto` as the default when you want one workflow that still works if a repository later moves away from opening Dependabot PRs.
+Use `alerts` as the default when you want security alerts to drive dependency operations without depending on Dependabot PRs. Choose `auto` only when you explicitly want PR-first behavior with an alerts fallback.
 
 ## Add To Another Repo
 

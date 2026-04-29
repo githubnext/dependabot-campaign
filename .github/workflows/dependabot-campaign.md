@@ -4,9 +4,9 @@ on:
   workflow_call:
     inputs:
       dependency-source:
-        description: Which dependency signals to process. Use auto to prefer PRs when present and fall back to security alerts.
+        description: Which dependency signals to process. Use alerts for the new default, or choose auto to prefer PRs when they are present.
         required: false
-        default: auto
+        default: alerts
         type: string
       mode:
         description: Operating mode for the caller repository or control plane.
@@ -107,7 +107,7 @@ Do not create custom databases or external trackers.
 
 Continuously reduce dependency risk and keep dependency remediation moving safely. Default to the lightweight path, and use campaign-style coordination only when project tracking or escalated routing adds value.
 
-Use `dependency-source`, `mode`, `project-sync`, and `summary-issue` as runtime toggles. Treat this workflow file as the source of truth for both policy and enrolled repositories.
+Use `dependency-source`, `mode`, `project-sync`, and `summary-issue` as runtime toggles. Default to `alerts` unless the caller explicitly wants PR-first handling. Treat this workflow file as the source of truth for both policy and enrolled repositories.
 
 ## Scope
 
