@@ -61,7 +61,7 @@ Use `auto` as the default when you want one workflow that still works if a repos
 
 ## Add To Another Repo
 
-Do not consume these workflows with GitHub Actions `uses:`. For agentic workflows, add the source workflow into the target repository with `gh aw add`, then update the imported copy later with `gh aw update`.
+Add the source workflow into the target repository with `gh aw add`, then update the imported copy later with `gh aw update`.
 
 For the baseline local review flow:
 
