@@ -75,7 +75,7 @@ Title:
 
 ## Comment
 
-### Dependabot Repair Review
+### Dependabot Review
 
 Action: repaired | safe-out | no-op  
 Checks reviewed: yes | no  
