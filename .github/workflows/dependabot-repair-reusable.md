@@ -27,6 +27,7 @@ on:
 inlined-imports: true
 
 permissions: read-all
+if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
 
 tools:
   github:
@@ -55,9 +56,7 @@ safe-outputs:
 
 ## Scope
 
-Only act on PRs authored by `dependabot[bot]`.
-
-If not, use `noop`.
+This workflow runs only for PRs authored by `dependabot[bot]`.
 
 ## Mission
 
