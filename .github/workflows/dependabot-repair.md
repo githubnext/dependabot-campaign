@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize, reopened]
 
 permissions: read-all
-if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
+if: github.event.pull_request.user.login == 'dependabot[bot]'
 
 tools:
   github:
